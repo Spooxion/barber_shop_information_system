@@ -48,12 +48,16 @@ private slots:
     void show_vector_in_table();
     void set_standart_combobox_time();
     QString standart_register(QString string);
+    QString GetRandomString();
+    QString GetRandomNumber();
+    QString GetRandomCost();
 
     void on_pushButton_cancel_clicked();
 
+    void on_pushButton_genirate_clicked();
+
 private:
     Ui::MainWindow *ui;
-    int chosed_column;
     int chosed_row;
     bool is_project_save = false;
     bool quest = false;
@@ -62,7 +66,6 @@ private:
     bool can_you_delite = true;
     bool is_show_error = false;
     unsigned int counter = 0;
-    QStringList columns;
     QStringList rows;
     std::vector <Client*> client_vector;
     SerchWindow *serch;

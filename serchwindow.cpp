@@ -20,7 +20,7 @@ int SerchWindow::rowCount(){
 }
 void SerchWindow::updateTable()
 {
-    //TODO: update inf in table, use vector
+
     ui->tableWidget->setRowCount(static_cast<int>(serch_results.size()));
     ui->tableWidget->setVerticalHeaderLabels(rows);
 

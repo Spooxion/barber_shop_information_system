@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     serch = new SerchWindow(this);
     ui->statusBar->visibleRegion();
 
+
+
     QPixmap *backgnd = new QPixmap(":Images/Images/back.png");
     QPalette *palette = new QPalette;
     palette->setBrush(QPalette::Window, QBrush(*backgnd));
@@ -34,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->pushButton->setToolTip("Для добовления клиента,\nзаполните все поля и нажмите на эту кнопку.");
     ui->pushButton_3->setToolTip("Для поиска клиента,\nукажите необходимые поля,\nа затем нажмите на эту кнопку.");
     ui->pushButton_cancel->setVisible(0);
+    ui->label_18->setVisible(0);
+    //ui->pushButton_genirate->setVisible(0);
+    //ui->lineEdit->setVisible(0);
 
     ui->label->setStyleSheet("color: rgb(220, 220, 220)");
     ui->label_2->setStyleSheet("color: rgb(220, 220, 220)");
@@ -52,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->label_15->setStyleSheet("color: rgb(220, 220, 220)");
     ui->label_16->setStyleSheet("color: rgb(220, 220, 220)");
     ui->label_17->setStyleSheet("color: rgb(220, 220, 220)");
+    ui->label_18->setStyleSheet("color: rgb(220, 220, 220)");
 
     ui->comboBox_data->setStyleSheet("QComboBox { background-color: rgb(200, 200, 200);}");
     ui->comboBox_data_2->setStyleSheet("QComboBox { background-color: rgb(200, 200, 200);}");
@@ -81,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->lineEdit_firstname_2->setMaxLength(20);
     ui->lineEdit_thirdname->setMaxLength(15);
     ui->lineEdit_thirdname_2->setMaxLength(15);
+    ui->lineEdit->setMaxLength(4);
 
     ui->lineEdit_firstname->setValidator(word_check);
     ui->lineEdit_firstname_2->setValidator(word_check);
@@ -90,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->lineEdit_cost_2->setValidator(int_check);
     ui->lineEdit_number->setValidator(int_check);
     ui->lineEdit_number_2->setValidator(int_check);
+    ui->lineEdit->setValidator(int_check);
 
     QDateTime date1 = QDateTime::currentDateTime();
      set_standart_combobox_time();
@@ -194,6 +202,51 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+QString MainWindow::GetRandomString()
+{
+   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+   const int randomStringLength = 12;
+
+   QString randomString;
+   for(int i=0; i<randomStringLength; ++i)
+   {
+       int index = qrand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
+}
+
+QString MainWindow::GetRandomNumber()
+{
+   const QString possibleCharacters("1234567890");
+   const int randomStringLength = 11;
+
+   QString randomString;
+   for(int i=0; i<randomStringLength; ++i)
+   {
+       int index = qrand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
+}
+
+QString MainWindow::GetRandomCost()
+{
+   const QString possibleCharacters("123456789");
+   const int randomStringLength = 4;
+
+   QString randomString;
+   for(int i=0; i<randomStringLength; ++i)
+   {
+       int index = qrand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     if (is_edit == false)
@@ -290,6 +343,8 @@ void MainWindow::on_pushButton_clicked()
 
         is_edit = false;
         line_edit_1_clear();
+        ui->pushButton_cancel->setVisible(0);
+
         QMessageBox::information(this,"Информация","Информация о клиенте была изменена","ОК");
         ui->pushButton->setText("Добавить");
         can_you_delite = true;
@@ -323,7 +378,7 @@ ui->lineEdit_cost_2->clear();
 void MainWindow::on_tableWidget_cellPressed(int row, int column)
 {
     chosed_row = row;
-    chosed_column = column;
+
     quest = true;
     edit_quest = true;
 }
@@ -372,17 +427,7 @@ void MainWindow::on_pushButton_3_clicked()
        QString cost_string = ui->lineEdit_cost_2->text();
        bool is_table_update = false;
 
-       /*if (firstname_string.isEmpty()   ||
-           thirdname_string.isEmpty()   ||
-           number_string.isEmpty()       ||
-           lastservice_string.isEmpty() ||
-           date_string.isEmpty()         ||
-           time_string.isEmpty()         ||
-           cost_string.isEmpty())
-       {
-       QMessageBox::information(0, "Информация", "Необходимо заполнить все поля, чтобы редактировать клиента.");
-       }
-       else{*/
+
        if(client_vector.size() == 0)
        {
            QMessageBox::warning(this, "Ошибка", "Добавьте, или откройте базу с клиентами, чтобы осуществить поиск.");
@@ -753,10 +798,9 @@ void MainWindow::on_action_open_triggered()
              }
 
 
-                chosed_column = 0;
+
                 chosed_row = 0;
                 counter = 0;
-                columns.clear();
                 rows.clear();
                 client_vector.clear();
 
@@ -826,4 +870,82 @@ void MainWindow::on_pushButton_cancel_clicked()
     ui->pushButton->setText("Добавить");
     can_you_delite = true;
     ui->pushButton_cancel->setVisible(0);
+}
+
+
+void MainWindow::on_pushButton_genirate_clicked()
+{
+
+
+    for (int i=0;i<ui->lineEdit->text().toInt(); i++)
+    {
+        QString buf;
+        QFile file("russian_surnames.txt");
+
+
+        QString  first_name = GetRandomString();
+        QString  third_name = GetRandomString();
+        QString  number = GetRandomNumber();
+        ui->comboBox_lastservice->setCurrentIndex(rand() % 9 +1);
+        QString  last_service = ui->comboBox_lastservice->currentText();
+        ui->comboBox_lastservice->setCurrentIndex(0);
+        ui->comboBox_data->setCurrentIndex(rand() % 5 +1);
+        QString  data = ui->comboBox_data->currentText();
+        ui->comboBox_lastservice->setCurrentIndex(0);
+        ui->comboBox_time->setCurrentIndex(rand() % 7 +1);
+        QString  time = ui->comboBox_time->currentText();
+        ui->comboBox_time->setCurrentIndex(0);
+        on_comboBox_lastservice_currentIndexChanged(0);
+        QString  cost = ui->lineEdit_cost->text();
+
+        Client *client1 = new Client (first_name,third_name,number,last_service,data,time,cost);
+        this->client_vector.push_back(client1);
+
+        QString buffer;
+            buffer.setNum(counter + 1);
+            rows.push_back(buffer);
+
+            ui->tableWidget->insertRow(static_cast<short>(counter));
+            ui->tableWidget->setVerticalHeaderLabels(rows);
+
+            QTableWidgetItem *item = new QTableWidgetItem();
+            item->setText(standart_register(client_vector[counter]->getFirstName()));
+            ui->tableWidget->setItem(static_cast<short>(counter), 0, item);
+
+            QTableWidgetItem *item1 = new QTableWidgetItem();
+            item1->setText(standart_register(client_vector[counter]->getThirdName()));
+            ui->tableWidget->setItem(static_cast<short>(counter), 1, item1);
+
+            QTableWidgetItem *item2 = new QTableWidgetItem();
+            item2->setText(this->client_vector[counter]->getNumber());
+            ui->tableWidget->setItem(static_cast<short>(counter), 2, item2);
+
+            QTableWidgetItem *item3 = new QTableWidgetItem();
+            item3->setText(this->client_vector[counter]->getLastService());
+            ui->tableWidget->setItem(static_cast<short>(counter),3,item3);
+
+            QTableWidgetItem *item4 = new QTableWidgetItem();
+            item4->setText(this->client_vector[counter]->getData());
+            ui->tableWidget->setItem(static_cast<short>(counter),4,item4);
+
+            QTableWidgetItem *item5 = new QTableWidgetItem();
+            item5->setText(this->client_vector[counter]->getTime());
+            ui->tableWidget->setItem(static_cast<short>(counter),5,item5);
+
+            QTableWidgetItem *item6 = new QTableWidgetItem();
+            item6->setText(this->client_vector[counter]->getCost());
+            ui->tableWidget->setItem(static_cast<short>(counter),6,item6);
+
+            counter++;
+
+
+
+
+    }
+
+    ui->lineEdit->clear();
+    ui->comboBox_data->setCurrentIndex(0);
+    ui->comboBox_time->setCurrentIndex(0);
+    ui->comboBox_lastservice->setCurrentIndex(0);
+
 }
