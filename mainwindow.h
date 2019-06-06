@@ -41,6 +41,7 @@ private slots:
     void on_action_open_triggered();
     void on_action_save_triggered();
     void on_action_save_as_triggered();
+    void on_action_csv_triggered();
     void on_action_close_triggered();
     void line_edit_1_clear();
     void line_edit_2_clear();
@@ -51,9 +52,7 @@ private slots:
     QString GetRandomString();
     QString GetRandomNumber();
     QString GetRandomCost();
-
     void on_pushButton_cancel_clicked();
-
     void on_pushButton_genirate_clicked();
 
 private:
