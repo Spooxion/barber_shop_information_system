@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QStringRef>
@@ -861,6 +861,55 @@ void MainWindow::on_action_close_triggered()
          {
              QApplication::quit();
          }
+}
+
+void MainWindow::on_action_csv_triggered()
+{
+
+
+
+
+        if(counter<=0){
+            QMessageBox *msgBox = new QMessageBox(QMessageBox::Information,"Внимание","Таблица пуста!!!",QMessageBox::Ok);
+            msgBox->setButtonText(QMessageBox::Ok, tr("ОК"));
+            if(msgBox->exec() == QMessageBox::Ok){}}
+        else{
+        QString S33="Файл сохранён по пути";
+        QString S34 = QFileDialog::getSaveFileName(this,tr("Сохранить"),QDir::currentPath(),tr("Документы Excel (*.csv);"),0,QFileDialog::DontConfirmOverwrite);
+        QString h1;
+        if (!S34.isNull()){
+        QFile f(S34);
+        QFile::remove(S34);
+            if( f.open( (QIODevice::ReadOnly | QIODevice::WriteOnly | QIODevice::Append) ))
+            {
+                QTextStream ts(&f);
+                QStringList strList;
+                for( int c = 0; c < ui->tableWidget->horizontalHeader()->count(); ++c )
+                strList << ui->tableWidget->model()->headerData(c, Qt::Horizontal).toString();
+                for( int r = 0; r < ui->tableWidget->verticalHeader()->count(); ++r )
+                {
+                ts << ui->tableWidget->model()->headerData(r-counter, Qt::Vertical).toString();
+                for( int c =0; c < ui->tableWidget->horizontalHeader()->count(); ++c )
+                {
+                    ts << ui->tableWidget->model()->data(ui->tableWidget->model()->index(r, c), Qt::DisplayRole).toString() << ";";
+                }
+                ts << "\n";
+                }
+                  f.close();
+            }
+         S33=S33+" "+S34;
+         QMessageBox *msgBox = new QMessageBox(QMessageBox::Information,"Внимание",S33,QMessageBox::Ok);
+         msgBox->setButtonText(QMessageBox::Ok, tr("ОК"));
+         if(msgBox->exec() == QMessageBox::Ok){}
+          exit(1);}
+         else{
+            QMessageBox *msgBox = new QMessageBox(QMessageBox::Information,"Внимание","Неверно выбран файл!",QMessageBox::Ok);
+            msgBox->setButtonText(QMessageBox::Ok, tr("ОК"));
+            if(msgBox->exec() == QMessageBox::Ok){}
+          }
+          }
+
+
 }
 
 void MainWindow::on_pushButton_cancel_clicked()
